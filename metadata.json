@@ -1,0 +1,6 @@
+{
+  "name": "Rashtriya Rifles Drone Detection",
+  "description": "Tactical defense system for Rashtriya Rifles automated drone detection, radar telemetry, and secure military git access grid.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
