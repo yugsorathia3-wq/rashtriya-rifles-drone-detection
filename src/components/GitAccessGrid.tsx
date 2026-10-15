@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Terminal, 
   Sparkles, 
@@ -22,7 +22,6 @@ export const GitAccessGrid: React.FC = () => {
   const [isAuthorizing, setIsAuthorizing] = useState<boolean>(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const lastTriggeredCodeRef = useRef<string>('');
 
   // Function to execute opening Git
   const launchGit = (codeToOpen: string = inputCode) => {
@@ -54,32 +53,14 @@ export const GitAccessGrid: React.FC = () => {
     }, 1800);
   };
 
-  // Trigger when typing numbers
+  // Number input (Git opens only on explicit ENTER / OPEN GIT action)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawVal = e.target.value;
     // Allow digits, dashes, dots
     const cleaned = rawVal.replace(/[^\d]/g, '');
     setInputCode(cleaned);
     tacticalAudio.playKeypadBeep(700 + cleaned.length * 50);
-
-    // Auto-open triggers whenever a number is typed
-    if (cleaned.length > 0 && cleaned !== lastTriggeredCodeRef.current) {
-      // Small debounce so if typing multi-digits, it waits 700ms or triggers
-      lastTriggeredCodeRef.current = cleaned;
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        launchGit(cleaned);
-      }, 600);
-    }
   };
-
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
 
   const handleKeypadPress = (val: string) => {
     if (val === 'CLEAR') {
@@ -97,11 +78,6 @@ export const GitAccessGrid: React.FC = () => {
     const nextCode = inputCode + val;
     setInputCode(nextCode);
     tacticalAudio.playKeypadBeep(850 + parseInt(val, 10) * 35);
-
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      launchGit(nextCode);
-    }, 500);
   };
 
   // Preset tactical codes
@@ -145,7 +121,7 @@ export const GitAccessGrid: React.FC = () => {
             <span className="text-zinc-500 text-lg">/ Git Gateway</span>
           </h2>
           <p className="text-xs font-mono text-zinc-300 mt-0.5">
-            जब भी आप इस ग्रिड बॉक्स में कोई भी नंबर लिखेंगे, Git स्वतः खुल जाएगा • Type ANY number to instantly open Git
+            नंबर दर्ज करें, फिर OPEN GIT दबाएँ • Enter a code, then press OPEN GIT to launch Git
           </p>
         </div>
 
@@ -203,7 +179,7 @@ export const GitAccessGrid: React.FC = () => {
                 <KeyRound className="w-4 h-4 text-amber-400" />
                 ENTER ANY NUMBERS HERE (कीबोर्ड से नंबर लिखें):
               </span>
-              <span className="text-[10px] text-zinc-400 font-mono">AUTO-TRIGGER ACTIVE</span>
+              <span className="text-[10px] text-zinc-400 font-mono">MANUAL LAUNCH MODE</span>
             </label>
 
             {/* Glowing Digital Text Input */}
