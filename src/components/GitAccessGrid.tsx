@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Lock, 
-  Unlock, 
-  ExternalLink, 
   Terminal, 
   Sparkles, 
-  CheckCircle2, 
   ShieldCheck, 
   RotateCcw, 
   Hash, 
@@ -25,7 +21,6 @@ export const GitAccessGrid: React.FC = () => {
     { code: '1999', time: '11:15:30 IST', url: 'https://github.com/topics/drone-detection' },
   ]);
   const [isAuthorizing, setIsAuthorizing] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastTriggeredCodeRef = useRef<string>('');
@@ -47,8 +42,6 @@ export const GitAccessGrid: React.FC = () => {
       { code: codeToOpen, time: nowTime, url: targetGitUrl },
       ...prev.slice(0, 4),
     ]);
-
-    setSuccessMessage(`ACCESS AUTHORIZED [CODE: ${codeToOpen}] - OPENING GIT...`);
 
     // Open target Git in new window
     try {
@@ -93,7 +86,6 @@ export const GitAccessGrid: React.FC = () => {
     if (val === 'CLEAR') {
       tacticalAudio.playKeypadBeep(400);
       setInputCode('');
-      setSuccessMessage(null);
       return;
     }
 
@@ -297,31 +289,6 @@ export const GitAccessGrid: React.FC = () => {
             </div>
           </div>
 
-          {/* Authorization Feedback Banner */}
-          {successMessage && (
-            <div className="bg-emerald-950/80 border-2 border-emerald-400 rounded-xl p-4 flex items-center justify-between animate-pulse shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
-                <div>
-                  <div className="text-sm font-military font-bold text-white tracking-wider">
-                    {successMessage}
-                  </div>
-                  <div className="text-xs font-mono text-emerald-300">
-                    Destination: {targetGitUrl}
-                  </div>
-                </div>
-              </div>
-              <a
-                href={targetGitUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 rounded bg-emerald-500 text-black font-military font-bold text-xs uppercase flex items-center gap-1 hover:bg-emerald-400 shrink-0"
-              >
-                <span>VISIT GIT NOW</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          )}
         </div>
 
         {/* Right: Interactive 3x4 Tactical Grid Keypad (lg:col-span-6) */}
@@ -370,22 +337,6 @@ export const GitAccessGrid: React.FC = () => {
                 </button>
               );
             })}
-          </div>
-
-          {/* Big Direct Launch Button - 100% Guaranteed to work */}
-          <div className="mt-5 pt-4 border-t border-emerald-900/60">
-            <a
-              href={targetGitUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => {
-                tacticalAudio.playUnlockSuccess();
-              }}
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-yellow-500 via-amber-500 to-emerald-500 text-black font-military font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 hover:opacity-95 transition-opacity shadow-[0_0_20px_rgba(234,179,8,0.3)] cursor-pointer"
-            >
-              <ExternalLink className="w-4 h-4 text-black" />
-              <span>LAUNCH GIT PORTAL NOW (सीधे GIT खोलें) ↗</span>
-            </a>
           </div>
 
           {/* Access Audit Trail */}
