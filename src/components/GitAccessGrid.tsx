@@ -14,7 +14,6 @@ import { tacticalAudio } from '../utils/audio';
 export const GitAccessGrid: React.FC = () => {
   const [inputCode, setInputCode] = useState<string>('');
   const [targetGitUrl, setTargetGitUrl] = useState<string>('https://github.com');
-  const [autoOpenEnabled, setAutoOpenEnabled] = useState<boolean>(true);
   const [lastOpenedTime, setLastOpenedTime] = useState<string | null>(null);
   const [accessHistory, setAccessHistory] = useState<Array<{ code: string; time: string; url: string }>>([
     { code: '1971', time: '10:42:15 IST', url: 'https://github.com' },
@@ -63,8 +62,8 @@ export const GitAccessGrid: React.FC = () => {
     setInputCode(cleaned);
     tacticalAudio.playKeypadBeep(700 + cleaned.length * 50);
 
-    // If auto-open is enabled and user typed a number
-    if (autoOpenEnabled && cleaned.length > 0 && cleaned !== lastTriggeredCodeRef.current) {
+    // Auto-open triggers whenever a number is typed
+    if (cleaned.length > 0 && cleaned !== lastTriggeredCodeRef.current) {
       // Small debounce so if typing multi-digits, it waits 700ms or triggers
       lastTriggeredCodeRef.current = cleaned;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -99,12 +98,10 @@ export const GitAccessGrid: React.FC = () => {
     setInputCode(nextCode);
     tacticalAudio.playKeypadBeep(850 + parseInt(val, 10) * 35);
 
-    if (autoOpenEnabled) {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        launchGit(nextCode);
-      }, 500);
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      launchGit(nextCode);
+    }, 500);
   };
 
   // Preset tactical codes
@@ -239,27 +236,6 @@ export const GitAccessGrid: React.FC = () => {
               )}
             </div>
 
-            {/* Auto Launch Toggle */}
-            <div className="flex items-center justify-between mt-4 pt-3 border-t border-emerald-950/80 text-xs font-mono text-zinc-300">
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={autoOpenEnabled}
-                  onChange={(e) => {
-                    tacticalAudio.playKeypadBeep(600);
-                    setAutoOpenEnabled(e.target.checked);
-                  }}
-                  className="w-4 h-4 rounded text-emerald-600 bg-zinc-900 border-zinc-700 accent-emerald-500"
-                />
-                <span className="text-zinc-200">
-                  नंबर लिखते ही Git खोलें (Auto-launch on typing)
-                </span>
-              </label>
-
-              <span className="text-amber-400 font-bold">
-                {autoOpenEnabled ? 'ENABLED' : 'MANUAL'}
-              </span>
-            </div>
           </div>
 
           {/* Quick Preset Military Codes */}
